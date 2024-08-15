@@ -6,12 +6,12 @@
 
 - name: Install OpenSCAP on Debian-based systems
   ansible.builtin.apt:
-    name: "{{ openscap_package_name }}"
+    name: "{{ openscap_package_name_debian }}"
     state: present
 
 - name: Install SCAP Security Guide on Debian-based systems
   ansible.builtin.apt:
-    name: "{{ ssg_package_name }}"
+    name: "{{ ssg_package_name_debian }}"
     state: present
 
 - name: Install unzip package

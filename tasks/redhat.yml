@@ -7,12 +7,12 @@
 
 - name: Install OpenSCAP on RedHat-based systems
   ansible.builtin.yum:
-    name: "{{ openscap_package_name }}"
+    name: "{{ openscap_package_name_redhat }}"
     state: present
 
 - name: Install SCAP Security Guide on RedHat-based systems
   ansible.builtin.yum:
-    name: "{{ ssg_package_name }}"
+    name: "{{ ssg_package_name_redhat }}"
     state: present
 
 - name: Install unzip package

@@ -1,7 +1,8 @@
 ---
 - name: Set SCAP guide file based on distribution and version
   ansible.builtin.set_fact:
-    scap_guide_file: "{{ ssg_guide_files[ansible_distribution][ansible_distribution_version.split('.')[0]] | default(ssg_default_guide_file) }}"
+    scap_guide_file: "{{ ssg_guide_files[ansible_distribution][ansible_distribution_version.split('.')[0]] | default(omit) }}"
+  when: ssg_guide_files[ansible_distribution] is defined and ssg_guide_files[ansible_distribution][ansible_distribution_major_version] is defined
 
 - name: Ensure SCAP Security Guide directory exists
   ansible.builtin.file:
@@ -34,11 +35,22 @@
     state: touch
     mode: '0644'
   when: not scap_guide_installed.stat.exists
+  
+- name: Check if SCAP guide file exists
+  ansible.builtin.stat:
+    path: "/usr/share/xml/scap/ssg/content/{{ scap_guide_file }}"
+  register: scap_guide_file_check
+
+- name: Fail if SCAP guide file does not exist
+  ansible.builtin.fail:
+    msg: "SCAP guide file not found for {{ ansible_distribution }} {{ ansible_distribution_version }}"
+  when: scap_guide_file_check.stat.exists == false
 
 - name: Display available profiles
-  ansible.builtin.command: oscap info "{{ ssg_content_directory }}/{{ scap_guide_file }}"
+  ansible.builtin.command: oscap info /usr/share/xml/scap/ssg/content/{{ scap_guide_file }}
   register: profile_info
   changed_when: false
+  failed_when: profile_info.rc != 0
 
 - name: Print profile information
   ansible.builtin.debug:

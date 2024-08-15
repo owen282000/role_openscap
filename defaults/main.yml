@@ -3,8 +3,12 @@
 
 # Package variables
 # These variables define the names of the required packages for OpenSCAP and its components
-openscap_package_name: "openscap-scanner"  # Name of the OpenSCAP package
-ssg_package_name: "scap-security-guide"    # Name of the SCAP Security Guide package
+openscap_package_name_debian: "libopenscap8"  # Name of the OpenSCAP package on Debian
+openscap_package_name_redhat: "openscap-scanner"  # Name of the OpenSCAP package on RedHat
+openscap_package_name_suse: "openscap-scanner"  # Name of the OpenSCAP package on SUSE
+ssg_package_name_debian: "ssg-debderived"    # Name of the SCAP Security Guide package on Debian
+ssg_package_name_redhat: "scap-security-guide"    # Name of the SCAP Security Guide package on RedHat
+ssg_package_name_suse: "scap-security-guide"    # Name of the SCAP Security Guide package on SUSE
 unzip_package_name: "unzip"                # Name of the unzip package
 
 # Command variables
@@ -14,7 +18,7 @@ openscap_version_command: "oscap -V"
 # SCAP Security Guide related variables
 # These variables define the version, URL, and directory structure for downloading and storing SCAP Security Guide files
 ssg_version: "0.1.69"  # SCAP Security Guide version
-ssg_url: "https://github.com/ComplianceAsCode/content/releases/download/{{ ssg_version }}/scap-security-guide-{{ ssg_version }}.zip" # URL SCAP Security Guide
+ssg_url: "https://github.com/ComplianceAsCode/content/releases/download/v{{ ssg_version }}/scap-security-guide-{{ ssg_version }}.zip" # URL SCAP Security Guide
 ssg_content_directory: "/usr/share/xml/scap/ssg/content/"  # Directory where SCAP content will be stored
 ssg_file_check: ".scap_security_guide_installed"  # Marker file to check if SCAP content has already been installed
 
@@ -22,21 +26,34 @@ ssg_file_check: ".scap_security_guide_installed"  # Marker file to check if SCAP
 # These mappings define the default SCAP XML guide files for specific distributions and versions
 ssg_guide_files:
   Ubuntu:
-    "16": "scap-security-guide-{{ ssg_version }}/ssg-ubuntu1604-ds-1.2.xml"   # Ubuntu 16.04 SCAP Guide
-    "18": "scap-security-guide-{{ ssg_version }}/ssg-ubuntu1804-ds-1.2.xml"   # Ubuntu 18.04 SCAP Guide
-    "20": "scap-security-guide-{{ ssg_version }}/ssg-ubuntu2004-ds-1.2.xml"   # Ubuntu 20.04 SCAP Guide
-    "22": "scap-security-guide-{{ ssg_version }}/ssg-ubuntu2204-ds-1.2.xml"   # Ubuntu 22.04 SCAP Guide
+    "16": "scap-security-guide-{{ ssg_version }}/ssg-ubuntu1604-ds-1.2.xml"
+    "18": "scap-security-guide-{{ ssg_version }}/ssg-ubuntu1804-ds-1.2.xml"
+    "20": "scap-security-guide-{{ ssg_version }}/ssg-ubuntu2004-ds-1.2.xml"
+    "22": "scap-security-guide-{{ ssg_version }}/ssg-ubuntu2204-ds-1.2.xml"
   RedHat:
-    "7": "scap-security-guide-{{ ssg_version }}/ssg-rhel7-ds-1.2.xml"         # Red Hat Enterprise Linux 7 SCAP Guide
-    "8": "scap-security-guide-{{ ssg_version }}/ssg-rhel8-ds-1.2.xml"         # Red Hat Enterprise Linux 8 SCAP Guide
-    "9": "scap-security-guide-{{ ssg_version }}/ssg-rhel9-ds-1.2.xml"         # Red Hat Enterprise Linux 9 SCAP Guide
+    "7": "scap-security-guide-{{ ssg_version }}/ssg-rhel7-ds-1.2.xml"
+    "8": "scap-security-guide-{{ ssg_version }}/ssg-rhel8-ds-1.2.xml"
+    "9": "scap-security-guide-{{ ssg_version }}/ssg-rhel9-ds-1.2.xml"
+  CentOS:
+    "7": "scap-security-guide-{{ ssg_version }}/ssg-centos7-ds-1.2.xml"
+    "8": "scap-security-guide-{{ ssg_version }}/ssg-centos8-ds-1.2.xml"
+    "9": "ssg-cs9-ds.xml"
+  Rocky:
+    "8": "scap-security-guide-{{ ssg_version }}/ssg-centos8-ds-1.2.xml"
+    "9": "scap-security-guide-{{ ssg_version }}/ssg-cs9-ds-1.2.xml"
+  AlmaLinux:
+    "8": "scap-security-guide-{{ ssg_version }}/ssg-centos8-ds-1.2.xml"
+    "9": "scap-security-guide-{{ ssg_version }}/ssg-cs9-ds-1.2.xml"
+  Fedora:
+    "8": "scap-security-guide-{{ ssg_version }}/ssg-centos8-ds-1.2.xml"
+    "9": "scap-security-guide-{{ ssg_version }}/ssg-cs9-ds-1.2.xml"
+  Debian:
+    "10": "scap-security-guide-{{ ssg_version }}/ssg-debian10-ds-1.2.xml"
+    "11": "scap-security-guide-{{ ssg_version }}/ssg-debian11-ds-1.2.xml"
   SUSE:
-    "12": "scap-security-guide-{{ ssg_version }}/ssg-sle12-ds-1.2.xml"        # SUSE Linux Enterprise 12 SCAP Guide
-    "15": "scap-security-guide-{{ ssg_version }}/ssg-sle15-ds-1.2.xml"        # SUSE Linux Enterprise 15 SCAP Guide
-
-# Fallback SCAP Guide file if no specific file is available for the OS distribution/version
-ssg_default_guide_file: "scap-security-guide-{{ ssg_version }}/ssg-generic-ds-1.2.xml"
-
+    "12": "scap-security-guide-{{ ssg_version }}/ssg-sle12-ds-1.2.xml"
+    "15": "scap-security-guide-{{ ssg_version }}/ssg-sle15-ds-1.2.xml"
+    
 ##### TODO: Make the SCAP guide file overwritable using host/group_vars for flexibility
 
 # SCAP Profile variables
