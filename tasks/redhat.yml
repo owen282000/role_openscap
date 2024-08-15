@@ -1,0 +1,22 @@
+---
+- name: Update packages on RedHat-based systems
+  ansible.builtin.yum:
+    name: "*"
+    state: latest
+    update_cache: true
+
+- name: Install OpenSCAP on RedHat-based systems
+  ansible.builtin.yum:
+    name: "{{ openscap_package_name }}"
+    state: present
+
+- name: Install SCAP Security Guide on RedHat-based systems
+  ansible.builtin.yum:
+    name: "{{ ssg_package_name }}"
+    state: present
+
+- name: Install unzip package
+  ansible.builtin.yum:
+    name: "{{ unzip_package_name }}"
+    state: present
+...

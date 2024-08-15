@@ -1,0 +1,86 @@
+---
+- name: Set SCAP guide file based on distribution and version
+  ansible.builtin.set_fact:
+    scap_guide_file: "{{ ssg_guide_files[ansible_distribution][ansible_distribution_version.split('.')[0]] | default(ssg_default_guide_file) }}"
+
+- name: Ensure SCAP Security Guide directory exists
+  ansible.builtin.file:
+    path: "{{ ssg_content_directory }}"
+    state: directory
+    mode: '0755'
+
+- name: Check if SCAP Security Guide has already been downloaded
+  ansible.builtin.stat:
+    path: "{{ ssg_content_directory }}/{{ ssg_file_check }}"
+  register: scap_guide_installed
+
+- name: Download SCAP Security Guide if not present
+  ansible.builtin.get_url:
+    url: "{{ ssg_url }}"
+    dest: "/tmp/scap-security-guide.zip"
+    mode: '0644'
+  when: not scap_guide_installed.stat.exists
+
+- name: Unzip SCAP Security Guide
+  ansible.builtin.unarchive:
+    src: "/tmp/scap-security-guide.zip"
+    dest: "{{ ssg_content_directory }}"
+    remote_src: true
+  when: not scap_guide_installed.stat.exists
+
+- name: Mark SCAP Security Guide as installed
+  ansible.builtin.file:
+    path: "{{ ssg_content_directory }}/{{ ssg_file_check }}"
+    state: touch
+    mode: '0644'
+  when: not scap_guide_installed.stat.exists
+
+- name: Display available profiles
+  ansible.builtin.command: oscap info "{{ ssg_content_directory }}/{{ scap_guide_file }}"
+  register: profile_info
+  changed_when: false
+
+- name: Print profile information
+  ansible.builtin.debug:
+    var: profile_info.stdout
+
+- name: Run STIG scan with OpenSCAP
+  ansible.builtin.command: >
+    oscap xccdf eval --profile "{{ ssg_profile }}"
+    --report /tmp/{{ ansible_hostname }}-report.html
+    "{{ ssg_content_directory }}/{{ scap_guide_file }}"
+  register: scan_result
+  changed_when: scan_result.rc == 0
+  failed_when: scan_result.rc not in [0, 2]
+  ignore_errors: true
+
+- name: Print scan result status
+  ansible.builtin.debug:
+    var: scan_result.rc
+
+- name: Provide guidance on what to do next
+  ansible.builtin.debug:
+    msg: >
+      The STIG scan has completed. Review the report.html file in your local
+      directory for detailed results.
+
+- name: Slurp the report from the node
+  ansible.builtin.slurp:
+    src: /tmp/{{ ansible_hostname }}-report.html
+  register: slurp_report
+
+- name: Create reports directory on the master node
+  ansible.builtin.file:
+    path: "{{ report_directory }}"
+    state: directory
+    mode: '0755'
+  run_once: true
+  delegate_to: "{{ report_storage_server }}"
+
+- name: Write report to master node
+  ansible.builtin.copy:
+    content: "{{ slurp_report.content | b64decode }}"
+    dest: "{{ report_directory }}/{{ report_filename }}"
+    mode: '0644'
+  delegate_to: "{{ report_storage_server }}"
+...

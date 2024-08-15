@@ -1,0 +1,9 @@
+---
+# tasks file for role_openscap
+
+- name: Ensure required packages are installed
+  ansible.builtin.include_tasks: "{{ ansible_os_family | lower }}.yml"
+
+- name: Run system independent tasks
+  ansible.builtin.include_tasks: "always.yml"
+...

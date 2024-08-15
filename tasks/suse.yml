@@ -1,0 +1,21 @@
+---
+- name: Update packages on SUSE systems
+  ansible.builtin.zypper:
+    update_cache: true
+    upgrade: true
+
+- name: Install OpenSCAP on SUSE-based systems
+  ansible.builtin.zypper:
+    name: "{{ openscap_package_name }}"
+    state: present
+
+- name: Install SCAP Security Guide on SUSE-based systems
+  ansible.builtin.zypper:
+    name: "{{ ssg_package_name }}"
+    state: present
+
+- name: Install unzip package
+  ansible.builtin.zypper:
+    name: "{{ unzip_package_name }}"
+    state: present
+...
