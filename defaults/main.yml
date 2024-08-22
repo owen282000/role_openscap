@@ -9,6 +9,9 @@ openscap_package_name_suse: "openscap-scanner"  # Name of the OpenSCAP package o
 ssg_package_name_debian: "ssg-debderived"    # Name of the SCAP Security Guide package on Debian
 ssg_package_name_redhat: "scap-security-guide"    # Name of the SCAP Security Guide package on RedHat
 ssg_package_name_suse: "scap-security-guide"    # Name of the SCAP Security Guide package on SUSE
+ssg_extra_packages_redhat:
+  - "openscap"
+  - "openscap-utils"
 unzip_package_name: "unzip"                # Name of the unzip package
 
 # Command variables
@@ -43,7 +46,7 @@ ssg_guide_files:
     "9": "scap-security-guide-{{ ssg_version }}/ssg-cs9-ds-1.2.xml"
   AlmaLinux:
     "8": "scap-security-guide-{{ ssg_version }}/ssg-centos8-ds-1.2.xml"
-    "9": "scap-security-guide-{{ ssg_version }}/ssg-cs9-ds-1.2.xml"
+    "9": "ssg-almalinux9-ds.xml"
   Fedora:
     "8": "scap-security-guide-{{ ssg_version }}/ssg-centos8-ds-1.2.xml"
     "9": "scap-security-guide-{{ ssg_version }}/ssg-cs9-ds-1.2.xml"
@@ -53,7 +56,7 @@ ssg_guide_files:
   SUSE:
     "12": "scap-security-guide-{{ ssg_version }}/ssg-sle12-ds-1.2.xml"
     "15": "scap-security-guide-{{ ssg_version }}/ssg-sle15-ds-1.2.xml"
-    
+
 ##### TODO: Make the SCAP guide file overwritable using host/group_vars for flexibility
 
 # SCAP Profile variables

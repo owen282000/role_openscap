@@ -15,6 +15,12 @@
     name: "{{ ssg_package_name_redhat }}"
     state: present
 
+- name: Install Extra OpenSCAP Packages on RedHat-based systems
+  ansible.builtin.yum:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ ssg_extra_packages_redhat }}"
+
 - name: Install unzip package
   ansible.builtin.yum:
     name: "{{ unzip_package_name }}"
